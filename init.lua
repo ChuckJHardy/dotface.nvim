@@ -402,6 +402,10 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>bb', '<cmd>bprevious<CR>', { desc = 'Buffer [B]ack (Previous)' })
       vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Buffer [N]ext' })
+      vim.keymap.set('n', '<leader>bb', '<cmd>bprevious<CR>', { desc = 'Buffer [B]ack (Previous)' })
+      vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = '[T]ab [N]ew' })
+      vim.keymap.set('n', '<leader>]', '<cmd>tabn<CR>', { desc = '[T]ab [N]ext' })
+      vim.keymap.set('n', '<leader>[', '<cmd>tabp<CR>', { desc = '[T]ab [P]revious' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
