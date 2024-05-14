@@ -236,6 +236,20 @@ require('lazy').setup({
   -- Github CoPilot
   'github/copilot.vim', -- Detect tabstop and shiftwidth automatically
 
+  -- Vim Test
+  {
+    'vim-test/vim-test',
+    config = function()
+      vim.g['test#strategy'] = 'neovim'
+      vim.g['test#neovim#term_position'] = 'vert'
+      vim.g['test#neovim#term_opts'] = { split = 'vertical' }
+
+      vim.keymap.set('n', '<leader>T', '<cmd>TestVisit<CR>', { desc = '[T]est Visit' })
+      vim.keymap.set('n', '<leader>t', '<cmd>TestFile<CR>', { desc = '[T]est' })
+      vim.keymap.set('n', '<leader>a', '<cmd>TestSuite<CR>', { desc = '[T]est Suite' })
+    end,
+  },
+
   -- Colorizer
   {
     'NvChad/nvim-colorizer.lua',
