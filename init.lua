@@ -218,6 +218,33 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- Custom Functions
+-- Define the function to toggle between .ts and .test.ts files in a vertical split
+function OpenTestFile()
+  -- Get the current file path
+  local current_file = vim.api.nvim_buf_get_name(0)
+
+  -- Determine the target file extension
+  local target_file
+  if string.match(current_file, '%.test%.ts$') then
+    -- If the current file is a test file, switch to the implementation file
+    target_file = string.gsub(current_file, '%.test%.ts$', '.ts')
+  else
+    -- Otherwise, switch to the test file
+    target_file = string.gsub(current_file, '%.ts$', '.test.ts')
+  end
+
+  -- Open the target file in a vertical split
+  vim.cmd('vsplit ' .. target_file)
+end
+
+-- Assign the function to a keymap
+vim.api.nvim_set_keymap('n', '<leader>oo', ':lua OpenTestFile()<CR>', {
+  noremap = true,
+  silent = true,
+  desc = '[O]pen [O]ther test or code file',
+})
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
