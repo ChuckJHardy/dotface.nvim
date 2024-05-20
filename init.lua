@@ -219,6 +219,7 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- Custom Functions
+
 -- Define the function to toggle between .ts and .test.ts files in a vertical split
 function OpenTestFile()
   -- Get the current file path
@@ -244,6 +245,33 @@ vim.api.nvim_set_keymap('n', '<leader>oo', ':lua OpenTestFile()<CR>', {
   silent = true,
   desc = '[O]pen [O]ther test or code file',
 })
+
+-- Define the function to delete the current buffer and keep the split open
+function DeleteCurrentBuffer()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local alternate_buf = vim.fn.bufnr '#'
+
+  -- Check if the alternate buffer is valid and not the same as the current buffer
+  if alternate_buf ~= -1 and alternate_buf ~= current_buf then
+    -- Switch to the alternate buffer
+    vim.api.nvim_set_current_buf(alternate_buf)
+  else
+    -- If there is no valid alternate buffer, switch to a new empty buffer
+    vim.cmd 'close'
+  end
+
+  -- Delete the original buffer
+  vim.api.nvim_buf_delete(current_buf, { force = true })
+end
+
+-- Map the function to a keybinding, e.g., <leader>bd
+vim.api.nvim_set_keymap('n', '<leader>bd', ':lua DeleteCurrentBuffer()<CR>', {
+  noremap = true,
+  silent = true,
+  desc = '[B]uffer [D]elete',
+})
+vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Buffer [N]ext' })
+vim.keymap.set('n', '<leader>bb', '<cmd>bprevious<CR>', { desc = 'Buffer [B]ack (Previous)' })
 
 -- [[ Configure and install plugins ]]
 --
@@ -455,9 +483,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>bb', '<cmd>bprevious<CR>', { desc = 'Buffer [B]ack (Previous)' })
-      vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Buffer [N]ext' })
-      vim.keymap.set('n', '<leader>bb', '<cmd>bprevious<CR>', { desc = 'Buffer [B]ack (Previous)' })
       vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = '[T]ab [N]ew' })
       vim.keymap.set('n', '<leader>]', '<cmd>tabn<CR>', { desc = '[T]ab [N]ext' })
       vim.keymap.set('n', '<leader>[', '<cmd>tabp<CR>', { desc = '[T]ab [P]revious' })
