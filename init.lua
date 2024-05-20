@@ -218,35 +218,7 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- Custom Functions
-
--- Define the function to toggle between .ts and .test.ts files in a vertical split
-function OpenTestFile()
-  -- Get the current file path
-  local current_file = vim.api.nvim_buf_get_name(0)
-
-  -- Determine the target file extension
-  local target_file
-  if string.match(current_file, '%.test%.ts$') then
-    -- If the current file is a test file, switch to the implementation file
-    target_file = string.gsub(current_file, '%.test%.ts$', '.ts')
-  else
-    -- Otherwise, switch to the test file
-    target_file = string.gsub(current_file, '%.ts$', '.test.ts')
-  end
-
-  -- Open the target file in a vertical split
-  vim.cmd('vsplit ' .. target_file)
-end
-
--- Assign the function to a keymap
-vim.api.nvim_set_keymap('n', '<leader>oo', ':lua OpenTestFile()<CR>', {
-  noremap = true,
-  silent = true,
-  desc = '[O]pen [O]ther test or code file',
-})
-
--- Define the function to delete the current buffer and keep the split open
+-- Buffer Controls
 function DeleteCurrentBuffer()
   local current_buf = vim.api.nvim_get_current_buf()
   local alternate_buf = vim.fn.bufnr '#'
@@ -313,9 +285,34 @@ require('lazy').setup({
       vim.g['test#neovim#term_position'] = 'vert'
       vim.g['test#neovim#term_opts'] = { split = 'vertical' }
 
-      vim.keymap.set('n', '<leader>T', '<cmd>TestVisit<CR>', { desc = '[T]est Visit' })
       vim.keymap.set('n', '<leader>t', '<cmd>TestFile<CR>', { desc = '[T]est' })
-      vim.keymap.set('n', '<leader>a', '<cmd>TestSuite<CR>', { desc = '[T]est Suite' })
+      vim.keymap.set('n', '<leader>a', '<cmd>TestSuite<CR>', { desc = 'Test [A]ll' })
+
+      -- Define the function to toggle between .ts and .test.ts files in a vertical split
+      function OpenTestFile()
+        -- Get the current file path
+        local current_file = vim.api.nvim_buf_get_name(0)
+
+        -- Determine the target file extension
+        local target_file
+        if string.match(current_file, '%.test%.ts$') then
+          -- If the current file is a test file, switch to the implementation file
+          target_file = string.gsub(current_file, '%.test%.ts$', '.ts')
+        else
+          -- Otherwise, switch to the test file
+          target_file = string.gsub(current_file, '%.ts$', '.test.ts')
+        end
+
+        -- Open the target file in a vertical split
+        vim.cmd('vsplit ' .. target_file)
+      end
+
+      -- Assign the function to a keymap
+      vim.api.nvim_set_keymap('n', '<leader>oo', ':lua OpenTestFile()<CR>', {
+        noremap = true,
+        silent = true,
+        desc = '[O]pen [O]ther test or code file',
+      })
     end,
   },
 
