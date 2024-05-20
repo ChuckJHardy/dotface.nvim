@@ -470,6 +470,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'bookmarks')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -898,6 +899,33 @@ require('lazy').setup({
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+
+  -- Bookmarking
+  {
+    'tomasky/bookmarks.nvim',
+    event = 'VimEnter',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+    },
+    opts = {},
+    config = function()
+      require('bookmarks').setup {
+        on_attach = function()
+          local bm = require 'bookmarks'
+          local map = vim.keymap.set
+
+          map('n', 'mm', bm.bookmark_toggle) -- add or remove bookmark at current line
+          map('n', 'mi', bm.bookmark_ann) -- add or edit mark annotation at current line
+          map('n', 'mc', bm.bookmark_clean) -- clean all marks in local buffer
+          map('n', 'mn', bm.bookmark_next) -- jump to next mark in local buffer
+          map('n', 'mp', bm.bookmark_prev) -- jump to previous mark in local buffer
+          map('n', 'ml', '<cmd>Telescope bookmarks list<CR>') -- show marked file list in quickfix window
+          map('n', 'mL', bm.bookmark_list) -- show marked file list in quickfix window
+          map('n', 'mx', bm.bookmark_clear_all) -- removes all bookmarks
+        end,
+      }
+    end,
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
